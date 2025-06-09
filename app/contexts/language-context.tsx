@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { LanguageContext, LocaleKey, getTranslation } from '../i18n'
+import { LanguageContext, LocaleKey, getTranslation } from '@/lib/i18n'
 
 interface LanguageProviderProps {
   children: ReactNode

@@ -1578,3 +1578,34 @@ export const translations = {
 } as const
 
 export type TranslationKey = keyof (typeof translations)["en"]
+
+export type LocaleKey = LanguageCode
+
+export const getTranslation = (locale: LocaleKey, key: string): string => {
+  const keys = key.split('.')
+  let value: any = translations[locale]
+
+  for (const k of keys) {
+    value = value?.[k]
+  }
+
+  // Fallback to English if translation not found
+  if (value === undefined) {
+    let fallback: any = translations[defaultLanguage]
+    for (const k of keys) {
+      fallback = fallback?.[k]
+    }
+    return fallback || key
+  }
+
+  return value || key
+}
+
+import { createContext } from 'react'
+
+interface LanguageContextType {
+  locale: LocaleKey
+  t: (key: string) => string
+}
+
+export const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
