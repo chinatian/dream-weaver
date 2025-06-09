@@ -152,33 +152,33 @@ export default function PricingPage() {
 
           {/* FAQ Section */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-[#F0F0F5] text-center mb-12">{t("pricing.faq")}</h2>
+            <h2 className="text-3xl font-bold text-[#F0F0F5] text-center mb-12">{t("pricing.faq.title")}</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-[#1E1E2D] border-[#8A4FFF]/20">
                 <CardContent className="p-6">
-                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq1.question")}</h3>
-                  <p className="text-[#A0A0B5]">{t("pricing.faq1.answer")}</p>
+                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq.q1")}</h3>
+                  <p className="text-[#A0A0B5]">{t("pricing.faq.a1")}</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-[#1E1E2D] border-[#8A4FFF]/20">
                 <CardContent className="p-6">
-                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq2.question")}</h3>
-                  <p className="text-[#A0A0B5]">{t("pricing.faq2.answer")}</p>
+                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq.q2")}</h3>
+                  <p className="text-[#A0A0B5]">{t("pricing.faq.a2")}</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-[#1E1E2D] border-[#8A4FFF]/20">
                 <CardContent className="p-6">
-                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq3.question")}</h3>
-                  <p className="text-[#A0A0B5]">{t("pricing.faq3.answer")}</p>
+                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq.q3")}</h3>
+                  <p className="text-[#A0A0B5]">{t("pricing.faq.a3")}</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-[#1E1E2D] border-[#8A4FFF]/20">
                 <CardContent className="p-6">
-                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq4.question")}</h3>
-                  <p className="text-[#A0A0B5]">{t("pricing.faq4.answer")}</p>
+                  <h3 className="text-[#F0F0F5] font-semibold mb-3">{t("pricing.faq.q4")}</h3>
+                  <p className="text-[#A0A0B5]">{t("pricing.faq.a4")}</p>
                 </CardContent>
               </Card>
             </div>
