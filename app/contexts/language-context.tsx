@@ -8,7 +8,7 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({
   children,
-  defaultLocale = 'zh'
+  defaultLocale = 'zh-CN'
 }: LanguageProviderProps) {
   const [locale, setLocale] = useState<LocaleKey>(defaultLocale)
 
