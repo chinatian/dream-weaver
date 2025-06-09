@@ -11,14 +11,26 @@ import { Badge } from "@/components/ui/badge"
 interface ContentLanguageFilterProps {
   selectedLanguages: LanguageCode[]
   onLanguageChange: (languages: LanguageCode[]) => void
-  contentCounts?: Record<LanguageCode, number>
+  contentCounts: Record<LanguageCode, number>
+}
+
+const defaultContentCounts: Record<LanguageCode, number> = {
+  'en': 0,
+  'zh-CN': 0,
+  'zh-TW': 0,
+  'fr': 0,
+  'de': 0,
+  'ar': 0,
+  'vi': 0,
+  'th': 0,
+  'id': 0
 }
 
 export function ContentLanguageFilter({ 
   selectedLanguages, 
   onLanguageChange, 
-  contentCounts = {} 
-}: ContentLanguageFilterProps) {
+  contentCounts = defaultContentCounts 
+}: Omit<ContentLanguageFilterProps, 'contentCounts'> & { contentCounts?: Record<LanguageCode, number> }) {
   const { language: currentLanguage } = useLanguage()
   const [open, setOpen] = useState(false)
 
