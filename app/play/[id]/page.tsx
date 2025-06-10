@@ -1,6 +1,7 @@
 "use client"
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 export const preferredRegion = 'auto'
 
 import { useState } from "react"

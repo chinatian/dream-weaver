@@ -8,8 +8,8 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
-  // Configure for Cloudflare Pages
-  output: 'export',
+  // Remove static export as it's not compatible with dynamic routes
+  // output: 'export',
 };
 
 if (process.env.NODE_ENV === 'development') {
