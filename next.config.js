@@ -6,9 +6,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Enable Edge Runtime globally
+  // Configure Edge Runtime
   experimental: {
-    runtime: 'edge',
+    runtime: undefined, // Let Next.js decide based on page exports
   },
   // Optimize for Cloudflare Pages
   webpack: (config, { isServer }) => {
