@@ -7,6 +7,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: true,
+    runtime: 'edge',
   },
   webpack: (config, { isServer, nextRuntime }) => {
     if (isServer && nextRuntime === 'edge') {
