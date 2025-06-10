@@ -8,6 +8,24 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  webpack: (config, { isServer, nextRuntime }) => {
+    if (isServer && nextRuntime === 'edge') {
+      // Configure for Edge Runtime - exclude Node.js built-ins
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        "async_hooks": false,
+        "fs": false,
+        "net": false,
+        "tls": false,
+        "crypto": false,
+        "stream": false,
+        "util": false,
+        "buffer": false,
+        "events": false,
+      };
+    }
+    return config;
+  },
   // Remove static export as it's not compatible with dynamic routes
   // output: 'export',
 };

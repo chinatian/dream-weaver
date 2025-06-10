@@ -2,9 +2,8 @@
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-export const preferredRegion = 'auto'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,13 +12,61 @@ import { Progress } from "@/components/ui/progress"
 import { Heart, Shield, Zap, Crown, ArrowLeft, Send, Bookmark, Share2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useLanguage } from "@/contexts/language-context"
-import { LanguageSwitcher } from "@/components/language-switcher"
+
+// Simple translation function for this page
+const useSimpleTranslation = () => {
+  const [language, setLanguage] = useState('zh-CN')
+  
+  const translations = {
+    'zh-CN': {
+      backToExplore: '返回探索',
+      yourChoice: '你的选择',
+      customActionPlaceholder: '输入自定义行动...',
+      customActionCost: '自定义行动消耗 1 灵感点',
+      currentScene: '当前场景',
+      characterStatus: '角色状态',
+      health: '生命值',
+      energy: '精力值',
+      inspirationPoints: '灵感点',
+      inspirationDescription: '用于自定义行动和特殊选择',
+      proFeatures: 'Pro 功能',
+      unlimitedInspiration: '无限灵感点',
+      saveGameProgress: '保存游戏进度',
+      highQualityImages: '高质量图片',
+      exclusiveContent: '独家内容',
+      upgradeToPro: '升级到 Pro'
+    },
+    'en': {
+      backToExplore: 'Back to Explore',
+      yourChoice: 'Your Choice',
+      customActionPlaceholder: 'Enter custom action...',
+      customActionCost: 'Custom actions cost 1 inspiration point',
+      currentScene: 'Current Scene',
+      characterStatus: 'Character Status',
+      health: 'Health',
+      energy: 'Energy',
+      inspirationPoints: 'Inspiration Points',
+      inspirationDescription: 'Used for custom actions and special choices',
+      proFeatures: 'Pro Features',
+      unlimitedInspiration: 'Unlimited Inspiration',
+      saveGameProgress: 'Save Game Progress',
+      highQualityImages: 'High Quality Images',
+      exclusiveContent: 'Exclusive Content',
+      upgradeToPro: 'Upgrade to Pro'
+    }
+  }
+  
+  const t = (key: string) => {
+    return translations[language as keyof typeof translations]?.[key as keyof typeof translations['zh-CN']] || key
+  }
+  
+  return { t, language, setLanguage }
+}
 
 export default function PlayPage() {
   const [customAction, setCustomAction] = useState("")
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
-  const { t } = useLanguage()
+  const { t } = useSimpleTranslation()
 
   const gameState = {
     title: "赛博朋克侦探",
@@ -81,7 +128,6 @@ export default function PlayPage() {
               <Button variant="ghost" size="sm" className="text-[#A0A0B5] hover:text-[#8A4FFF]">
                 <Share2 className="w-4 h-4" />
               </Button>
-              <LanguageSwitcher />
               <div className="flex items-center space-x-2 text-[#00F5D4]">
                 <Zap className="w-4 h-4" />
                 <span className="font-medium">{gameState.playerStats.inspiration}</span>
