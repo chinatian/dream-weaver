@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "npx @cloudflare/next-on-pages@1.8.5",
+    "pages:build": "NODE_ENV=production npx @cloudflare/next-on-pages@1.8.5",
     "pages:preview": "npx wrangler pages dev .vercel/output/static --compatibility-date=2024-03-19",
     "pages:deploy": "npm run pages:build && npx wrangler pages deploy .vercel/output/static"
   },

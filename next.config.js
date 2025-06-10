@@ -8,16 +8,20 @@ const nextConfig = {
     webpackBuildWorker: false,
   },
   webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Don't attempt to import node-specific modules on the client side
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        "async_hooks": false,
-        "fs": false,
-        "net": false,
-        "tls": false,
-      };
+    // Set platform to 'node' for server-side bundles
+    if (isServer) {
+      config.platform = 'node';
     }
+
+    // Handle Node.js built-ins
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        ...config.resolve.fallback,
+        "async_hooks": isServer ? require.resolve('async_hooks') : false,
+      }
+    };
+
     return config;
   },
 };
