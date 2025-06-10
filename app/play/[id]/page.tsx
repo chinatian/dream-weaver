@@ -1,5 +1,8 @@
 "use client"
 
+export const runtime = 'edge'
+export const preferredRegion = 'auto'
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"

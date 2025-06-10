@@ -6,10 +6,10 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', '*.pages.dev'],
-    },
+    serverActions: true,
   },
+  // Configure for Cloudflare Pages
+  output: 'export',
 };
 
 if (process.env.NODE_ENV === 'development') {
