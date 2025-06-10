@@ -64,6 +64,7 @@ export const languages = {
   },
 } as const
 
+
 export type LanguageCode = keyof typeof languages
 export const defaultLanguage: LanguageCode = "en"
 
