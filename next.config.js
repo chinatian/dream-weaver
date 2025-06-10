@@ -5,10 +5,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    serverActions: true,
-    runtime: 'edge',
-  },
+  experimental: {},
   webpack: (config, { isServer, nextRuntime }) => {
     if (isServer && nextRuntime === 'edge') {
       // Configure for Edge Runtime - exclude Node.js built-ins
