@@ -5,6 +5,8 @@ import { LanguageProvider } from "@/contexts/language-context"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Inter } from "next/font/google"
 
+export const runtime = 'edge'
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
