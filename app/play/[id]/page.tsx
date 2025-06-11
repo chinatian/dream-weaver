@@ -107,7 +107,7 @@ export default function PlayPage() {
     <div className="min-h-screen bg-[#12121B]">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-[#1E1E2D]/80 backdrop-blur-md border-b border-[#8A4FFF]/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto ">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Link
