@@ -23,6 +23,8 @@ export default function CreatePage() {
   const [genre, setGenre] = useState("")
   const [isPublic, setIsPublic] = useState(true)
 
+  
+
   const { t } = useLanguage()
 
   return (
