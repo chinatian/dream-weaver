@@ -3,7 +3,8 @@
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useParams } from "next/navigation"
 import { GameNavbar } from "@/app/components/game/GameNavbar"
 import { GameScene } from "@/app/components/game/GameScene"
 import { PlayerStats } from "@/app/components/game/PlayerStats"
@@ -11,11 +12,50 @@ import { ProFeatures } from "@/app/components/game/ProFeatures"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
-import { GameState, SceneDescription } from "@/app/types/game"
+import { GameState, SceneDescription, StoryData } from "@/app/types/game"
+import { truncate } from "node:fs"
+import { sendChatStreamRequest } from "@/app/lib/chat"
+import { useLanguage } from "@/contexts/language-context"
+import { parseGameState,getJsonFromContent } from "@/lib/parser"
+import {sceneImagePrompt} from "@/lib/defaultSystemPrompt"
+import {ImageGenerationInput,ReplicateClient} from "@/lib/replicateClient"
 
 export default function PlayPage() {
+  const params = useParams()
+  const { t } = useLanguage()
+  const [storyData, setStoryData] = useState<StoryData>({} as StoryData)
   const [messages, setMessages] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [gameData, setGameData] = useState<any>({} as any)
+
+
+  useEffect(() => {
+    const fetchStoryData = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch(`/api/stories/${params.id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch story data')
+        }
+        const data = await response.json()
+        setStoryData(data)
+      } catch (error) {
+        console.error('Error fetching story:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (params.id) {
+      fetchStoryData()
+    }
+  }, [params.id])
+
+  useEffect(() => {
+    if (storyData) {
+      console.log(storyData)
+    }
+  }, [storyData])
 
   const gameState: GameState = {
     title: "赛博朋克侦探",
@@ -32,21 +72,7 @@ export default function PlayPage() {
   }
 
   const sceneDescription: SceneDescription = {
-    segments: [
-      {
-        type: "narration",
-        text: "夜幕降临，霓虹灯开始在这座城市的每个角落闪烁。你站在第七街区的入口，雨水打湿了你的风衣。刚刚收到的匿名消息让你来到这里——一个关于失踪AI的线索。"
-      },
-      {
-        type: "narration",
-        text: "街道两旁是各种小摊贩和黑市商人，他们的眼神都很警惕。远处传来低沉的音乐声，那是来自'数字梦境'酒吧。"
-      },
-      {
-        type: "character",
-        speaker: "神秘商人",
-        text: "这位侦探，要来点特殊的情报吗？"
-      }
-    ],
+    segments: [],
     options: [
       { id: "1", text: "询问失踪AI的相关信息" },
       { id: "2", text: "观察商人的表情和举止" },
@@ -54,16 +80,130 @@ export default function PlayPage() {
     ]
   }
 
-  const handleAction = (action: string) => {
-    setIsLoading(true)
-    setMessages([...messages, { content: action }])
-    setIsLoading(false)
+  const startGame = async (addMessage:any) => {
+    const systemPrompt = storyData.prompt
+    const currentMessages = [...messages, addMessage]
+    setMessages(currentMessages)
+
+  
+    const response = await sendChatStreamRequest(
+      currentMessages, 
+      process.env.NEXT_PUBLIC_OPENAI_API_KEY || "", 
+      process.env.NEXT_PUBLIC_MODEL || "", 
+      systemPrompt)
+    console.log(response)
+    // 处理流式响应
+    const reader = response.body?.getReader();
+    let result = ""
+    while (true) {
+      const { done, value } = await reader?.read() || {};
+      if (done) {
+        break;
+      }
+      // 处理返回的文本块
+      const text = new TextDecoder().decode(value);
+      console.log(text)
+      result += text
+      // ... 处理文本
+    }
+    const _gameData = parseGameState(result)
+    setGameData(_gameData)
+    const assistantMessage = { role: "assistant", content: result }
+    setMessages([...currentMessages, assistantMessage])
+    console.log('gameData', _gameData)
+    if (_gameData.content) {
+      genSenceImage(_gameData.content)
+    }
   }
+
+  const handleAction = async (action: string,text:string) => {
+    console.log('action', action,text)
+    if (action === "start") {
+      setIsLoading(true)
+      await startGame({ role: "user", content: t("explore.startGame") })
+      setIsLoading(false)
+    }
+    if (action === "option") {
+      console.log(text)
+      setIsLoading(true)
+      await startGame({ role: "user", content: text })
+      setIsLoading(false)
+    }
+    if (action === "custom") {
+      console.log(text)
+      setIsLoading(true)
+      await startGame({ role: "user", content: text })
+      setIsLoading(false)
+    }
+  }
+
+  const genSenceImage = async (content:string) => {
+    if (!content) {
+      console.error('Content is required for image generation')
+      return
+    }
+
+    const systemPrompt = sceneImagePrompt
+    const _messages = [
+      {role:'user',content:content}
+    ]
+    const response = await sendChatStreamRequest(
+      _messages, 
+      process.env.NEXT_PUBLIC_OPENAI_API_KEY || "", 
+      process.env.NEXT_PUBLIC_MODEL || "", 
+      systemPrompt)
+   
+    // 处理流式响应
+    const reader = response.body?.getReader();
+    let result = ""
+    while (true) {
+      const { done, value } = await reader?.read() || {};
+      if (done) {
+        break;
+      }
+      // 处理返回的文本块
+      const text = new TextDecoder().decode(value);
+      console.log(text)
+      result += text
+      // ... 处理文本
+    }
+
+    const imgPrompt = getJsonFromContent(result)
+
+    try {
+      const response = await fetch('/api/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: imgPrompt.imagePrompt,
+          aspect_ratio: "3:4",
+          key: `scene-${params.id}-${Date.now()}.png`
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate image')
+      }
+
+      const data = await response.json()
+      console.log('Generated image URL:', data.imageUrl)
+      setGameData({
+        ...gameData,
+        sceneImage: data.imageUrl
+      })
+    } catch (error) {
+      console.error('Error generating image:', error)
+    }
+  }
+
+
 
   return (
     <div className="min-h-screen bg-[#12121B]">
       <GameNavbar 
-        title={gameState.title} 
+        title={storyData?.title || ''} 
         inspirationPoints={gameState.playerStats.inspiration} 
       />
 
@@ -73,7 +213,9 @@ export default function PlayPage() {
             {/* Story Content - Left Side */}
             <div className="lg:col-span-4">
               <GameScene
-                sceneImage={gameState.sceneImage}
+                storyData={storyData}
+                gameData={gameData}
+               
                 task={gameState.task}
                 sceneDescription={sceneDescription}
                 onAction={handleAction}
@@ -97,7 +239,7 @@ export default function PlayPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2D] via-transparent to-transparent"></div>
                     <div className="absolute bottom-4 left-4 right-4">
                       <Badge className="bg-[#00F5D4] text-[#12121B] font-medium mb-2">当前场景</Badge>
-                      <h3 className="text-[#F0F0F5] font-bold text-lg">{gameState.currentScene}</h3>
+                      <h3 className="text-[#F0F0F5] font-bold text-lg">{storyData?.title}</h3>
                     </div>
                   </div>
                 </CardContent>

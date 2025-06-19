@@ -1,4 +1,9 @@
 name = "dream-weaver"
 compatibility_date = "2024-03-19"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static" 
+pages_build_output_dir = ".vercel/output/static"
+
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "dream-weaver-images"
+preview_bucket_name = "dream-weaver-images-dev" 

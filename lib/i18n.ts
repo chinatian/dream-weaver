@@ -68,6 +68,15 @@ export const languages = {
 export type LanguageCode = keyof typeof languages
 export const defaultLanguage: LanguageCode = "en"
 
+export function getLanguageInfo(code: LanguageCode) {
+  const language = languages[code]
+  if (!language) {
+    return languages[defaultLanguage]
+  }
+  return language
+}
+
+
 export const translations = {
   en: {
     app: {
@@ -392,6 +401,67 @@ export const translations = {
       title: "Featured Stories",
       description: "Discover handpicked stories that showcase the best of our creative community",
     },
+    scriptGenerator: {
+      title: "Script Generator",
+      systemPrompt: {
+        label: "System Prompt",
+        placeholder: "Edit system prompt..."
+      },
+      storyTitle: {
+        label: "Story Title (Optional)",
+        placeholder: "Enter story title"
+      },
+      language: {
+        label: "Language",
+        placeholder: "Select story language"
+      },
+      storyType: {
+        label: "Story Type",
+        options: {
+          fantasy: "Fantasy Adventure",
+          scifi: "Sci-fi Future",
+          horror: "Horror Thriller",
+          romance: "Romance",
+          mystery: "Mystery",
+          historical: "Historical"
+        }
+      },
+      viewpoint: {
+        label: "Narrative Viewpoint",
+        options: {
+          first: "First Person",
+          third: "Third Person"
+        }
+      },
+      storyContent: {
+        label: "Story Content",
+        placeholder: "Enter short story or story outline..."
+      },
+      additionalInstructions: {
+        label: "Additional Requirements (Optional)",
+        placeholder: "Enter additional requirements or guidance..."
+      },
+      buttons: {
+        generate: "Generate YAML",
+        generating: "Generating...",
+        copy: "Copy",
+        apply: "Apply to System Prompt"
+      },
+      messages: {
+        enterStory: "Please enter story content",
+        missingApiKey: "Missing API key",
+        enterApiKey: "Please enter OpenRouter API key in settings",
+        yamlGenerated: "YAML Generated",
+        scriptSettingsGenerated: "Script settings generated successfully",
+        generateFailed: "Generation Failed",
+        copied: "Copied",
+        copiedToClipboard: "YAML content copied to clipboard"
+      },
+      input: {
+        title: "Story Input",
+        result: "Generated Result"
+      }
+    }
   },
   "zh-CN": {
     app: {
@@ -698,6 +768,67 @@ export const translations = {
       title: "精选故事",
       description: "发现精心挑选的故事，展示我们创作社区的精彩作品",
     },
+    scriptGenerator: {
+      title: "剧本生成器",
+      systemPrompt: {
+        label: "系统提示词",
+        placeholder: "编辑系统提示词..."
+      },
+      storyTitle: {
+        label: "故事标题（可选）",
+        placeholder: "输入故事标题"
+      },
+      language: {
+        label: "语言",
+        placeholder: "选择故事语言"
+      },
+      storyType: {
+        label: "故事类型",
+        options: {
+          fantasy: "奇幻冒险",
+          scifi: "科幻未来",
+          horror: "恐怖惊悚",
+          romance: "浪漫爱情",
+          mystery: "悬疑推理",
+          historical: "历史古代"
+        }
+      },
+      viewpoint: {
+        label: "叙述视角",
+        options: {
+          first: "第一人称",
+          third: "第三人称"
+        }
+      },
+      storyContent: {
+        label: "故事内容",
+        placeholder: "输入短篇小说或故事概要..."
+      },
+      additionalInstructions: {
+        label: "额外要求（可选）",
+        placeholder: "输入额外的要求或指导..."
+      },
+      buttons: {
+        generate: "生成YAML",
+        generating: "生成中...",
+        copy: "复制",
+        apply: "应用到系统提示词"
+      },
+      messages: {
+        enterStory: "请输入故事内容",
+        missingApiKey: "缺少API密钥",
+        enterApiKey: "请在设置中输入OpenRouter API密钥",
+        yamlGenerated: "YAML生成成功",
+        scriptSettingsGenerated: "已成功生成剧本设定",
+        generateFailed: "生成失败",
+        copied: "已复制",
+        copiedToClipboard: "YAML内容已复制到剪贴板"
+      },
+      input: {
+        title: "故事输入",
+        result: "生成结果"
+      }
+    }
   },
   "zh-TW": {
     app: {
@@ -1004,6 +1135,67 @@ export const translations = {
       title: "精選故事",
       description: "發現精心挑選的故事，展示我們創作社群的精彩作品",
     },
+    scriptGenerator: {
+      title: "劇本生成器",
+      systemPrompt: {
+        label: "系統提示詞",
+        placeholder: "編輯系統提示詞..."
+      },
+      storyTitle: {
+        label: "故事標題（可選）",
+        placeholder: "輸入故事標題"
+      },
+      language: {
+        label: "語言",
+        placeholder: "選擇故事語言"
+      },
+      storyType: {
+        label: "故事類型",
+        options: {
+          fantasy: "奇幻冒險",
+          scifi: "科幻未來",
+          horror: "恐怖驚悚",
+          romance: "浪漫愛情",
+          mystery: "懸疑推理",
+          historical: "歷史古代"
+        }
+      },
+      viewpoint: {
+        label: "敘述視角",
+        options: {
+          first: "第一人稱",
+          third: "第三人稱"
+        }
+      },
+      storyContent: {
+        label: "故事內容",
+        placeholder: "輸入短篇小說或故事概要..."
+      },
+      additionalInstructions: {
+        label: "額外要求（可選）",
+        placeholder: "輸入額外的要求或指導..."
+      },
+      buttons: {
+        generate: "生成YAML",
+        generating: "生成中...",
+        copy: "複製",
+        apply: "應用到系統提示詞"
+      },
+      messages: {
+        enterStory: "請輸入故事內容",
+        missingApiKey: "缺少API密鑰",
+        enterApiKey: "請在設置中輸入OpenRouter API密鑰",
+        yamlGenerated: "YAML生成成功",
+        scriptSettingsGenerated: "已成功生成劇本設定",
+        generateFailed: "生成失敗",
+        copied: "已複製",
+        copiedToClipboard: "YAML內容已複製到剪貼板"
+      },
+      input: {
+        title: "故事輸入",
+        result: "生成結果"
+      }
+    }
   },
   fr: {
     app: {

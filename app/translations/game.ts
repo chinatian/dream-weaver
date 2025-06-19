@@ -4,6 +4,7 @@ export const translations = {
   'zh-CN': {
     backToExplore: '返回探索',
     yourChoice: '你的选择',
+    startGame: '开始游戏',
     customActionPlaceholder: '输入自定义行动...',
     customActionCost: '自定义行动消耗 1 灵感点',
     currentScene: '当前场景',
@@ -22,6 +23,7 @@ export const translations = {
   'en': {
     backToExplore: 'Back to Explore',
     yourChoice: 'Your Choice',
+    startGame: 'Start Game',
     customActionPlaceholder: 'Enter custom action...',
     customActionCost: 'Custom actions cost 1 inspiration point',
     currentScene: 'Current Scene',
