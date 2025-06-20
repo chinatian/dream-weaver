@@ -86,5 +86,11 @@
   },
   "overrides": {
     "vercel": "$vercel"
+  },
+  "pnpm": {
+    "allowed-build-scripts": [
+      "esbuild",
+      "prisma"
+    ]
   }
 }
