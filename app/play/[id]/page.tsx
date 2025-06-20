@@ -215,7 +215,7 @@ export default function PlayPage() {
               <GameScene
                 storyData={storyData}
                 gameData={gameData}
-               
+                sceneImage={gameData?.sceneImage || gameState.sceneImage}
                 task={gameState.task}
                 sceneDescription={sceneDescription}
                 onAction={handleAction}
