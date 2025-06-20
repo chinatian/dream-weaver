@@ -11,30 +11,22 @@ datasource db {
 }
 
 model Story {
-  id          Int      @id @default(autoincrement())
-  title       String
-  currentScene String
-  sceneImage  String
-  task        Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  scenes      Scene[]
-  playerStats PlayerStats?
+  id           Int      @id @default(autoincrement())
+  title        String
+  introduction String?  @db.VarChar(500)
+  coverImage   String?
+  userId       BigInt
+  prompt       String   @db.Text
+  status       Status   @default(DRAFT)
+  language     String   @default("en")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("stories")
 }
 
-model Scene {
-  id          Int      @id @default(autoincrement())
-  storyId     Int
-  description Json
-  options     Json
-  story       Story    @relation(fields: [storyId], references: [id])
-}
-
-model PlayerStats {
-  id          Int      @id @default(autoincrement())
-  storyId     Int      @unique
-  health      Int
-  energy      Int
-  inspiration Int
-  story       Story    @relation(fields: [storyId], references: [id])
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
