@@ -2,7 +2,7 @@ import { useState,useRef,useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { SceneDescription, GameTask, StoryData } from '@/app/types/game'
+import { SceneDescription, GameTask, StoryData, SceneSegment } from '@/app/types/game'
 import { useTranslation } from '@/app/translations/game'
 
 
@@ -105,7 +105,7 @@ export function GameScene({
                     </div>
                   )}
                   
-                  {gameData?.mainContent?.slice(0, currentSegmentIndex).map((segment, index) => (
+                  {gameData?.mainContent?.slice(0, currentSegmentIndex).map((segment: SceneSegment, index: number) => (
                     <div 
                       key={index} 
                       className={`${
