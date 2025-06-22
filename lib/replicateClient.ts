@@ -1,6 +1,6 @@
 import Replicate from "replicate";
-import { R2Client } from "./r2Client";
 import {uploadFile} from "./s3Client"
+import { CodeSquare } from "lucide-react";
 
 export interface ImageGenerationInput {
     prompt: string;
@@ -21,20 +21,29 @@ export class ReplicateClient {
 
     async generateImage(input: ImageGenerationInput, key: string): Promise<string> {
         try {
-            const output = (await this.replicate.run("google/imagen-4", {
+            const output = await this.replicate.run("google/imagen-4", {
                 input: {
                     prompt: input.prompt,
                     aspect_ratio: input.aspect_ratio || "16:9",
                     safety_filter_level: input.safety_filter_level || "block_medium_and_above"
                 }
-            }) as unknown) as string;
+            });
 
-            // Fetch the image data from the URL provided by Replicate
-            const response = await fetch(output);
-            const arrayBuffer = await response.arrayBuffer();
-            
+            console.log("Generated image, uploading to R2...");
+
+            // output 是一个 FileOutput 对象，需要获取其二进制数据
+            if (!output) {
+                throw new Error('No image data received from Replicate');
+            }
+
+            // 获取二进制数据 - 正确的方法
+            const blob = await (output as any).blob();
+            const arrayBuffer = await blob.arrayBuffer();
+            const imageBuffer = Buffer.from(arrayBuffer);
+
             // Upload to R2 and return the public URL
             const bucketName = process.env.R2_BUCKET_NAME;
+            console.log("bucketName", bucketName);
             if (!bucketName) {
                 throw new Error('R2_BUCKET_NAME environment variable is not defined');
             }
@@ -42,10 +51,11 @@ export class ReplicateClient {
             await uploadFile(
                 bucketName,
                 key,
-                Buffer.from(arrayBuffer),
-                'image/jpg'
-
+                imageBuffer,
+                'image/png'
             );
+            
+            console.log("generateImage", 'ok');
             return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}${key}`
         } catch (error) {
             throw new Error(`Failed to generate image: ${error instanceof Error ? error.message : 'Unknown error'}`);

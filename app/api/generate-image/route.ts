@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ imageUrl })
     } catch (error) {
+      // throw error;
+      console.error("Full error stack:", error instanceof Error ? error.stack : "No stack trace available")
       console.error("Image generation error:", error)
       return NextResponse.json(
         {
