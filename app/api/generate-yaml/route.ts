@@ -5,15 +5,17 @@ export async function POST(req: NextRequest) {
   try {
     const { apiKey, model, systemPrompt, userPrompt } = await req.json()
 
+    const useApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || ""
+
     // 验证必要参数
     if (!userPrompt) {
       return NextResponse.json({ error: "请提供用户提示词" }, { status: 400 })
     }
 
     // 如果没有提供API密钥，返回错误
-    if (!apiKey) {
-      return NextResponse.json({ error: "请提供OpenRouter API密钥" }, { status: 400 })
-    }
+    // if (!apiKey) {
+    //   return NextResponse.json({ error: "请提供OpenRouter API密钥" }, { status: 400 })
+    // }
 
     console.log(`使用模型: ${model || "openai/gpt-4-turbo"}`)
 
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`,
+              Authorization: `Bearer ${useApiKey}`,
               "HTTP-Referer": "https://v0.dev",
               "X-Title": "AI Story Chat App",
             },

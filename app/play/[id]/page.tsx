@@ -88,7 +88,7 @@ export default function PlayPage() {
   
     const response = await sendChatStreamRequest(
       currentMessages, 
-      process.env.NEXT_PUBLIC_OPENAI_API_KEY || "", 
+      "" || "", 
       process.env.NEXT_PUBLIC_MODEL || "", 
       systemPrompt)
     console.log(response)
@@ -149,7 +149,7 @@ export default function PlayPage() {
     ]
     const response = await sendChatStreamRequest(
       _messages, 
-      process.env.NEXT_PUBLIC_OPENAI_API_KEY || "", 
+      "" , 
       process.env.NEXT_PUBLIC_MODEL || "", 
       systemPrompt)
    

@@ -9,7 +9,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { ScriptGenerator } from "@/app/components/create/script-generator"
 
 export default function CreatePage() {
-  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_API_KEY || "")
+  const [apiKey, setApiKey] = useState("")
   const [model, setModel] = useState(process.env.NEXT_PUBLIC_MODEL || "openai/gpt-4-turbo-preview")
   const { t } = useLanguage()
 
