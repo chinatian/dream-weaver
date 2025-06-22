@@ -34,10 +34,15 @@ export class ReplicateClient {
             const arrayBuffer = await response.arrayBuffer();
             
             // Upload to R2 and return the public URL
+            const bucketName = process.env.R2_BUCKET_NAME;
+            if (!bucketName) {
+                throw new Error('R2_BUCKET_NAME environment variable is not defined');
+            }
+            
             await uploadFile(
-                process.env.R2_BUCKET_NAME,
+                bucketName,
                 key,
-                arrayBuffer,
+                Buffer.from(arrayBuffer),
                 'image/jpg'
 
             );
