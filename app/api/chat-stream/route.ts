@@ -1,6 +1,13 @@
 export const runtime = 'edge';
 import type { NextRequest } from "next/server"
 
+// 检测是否在Cloudflare环境
+const isCloudflareEnvironment = () => {
+  return typeof globalThis.caches !== 'undefined' && 
+         typeof globalThis.navigator !== 'undefined' &&
+         globalThis.navigator.userAgent?.includes('Cloudflare-Workers')
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { messages, apiKey, model, systemPrompt } = await req.json()
@@ -21,7 +28,8 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    console.log(`使用模型: ${model || "openai/gpt-4-turbo"}`)
+    const isCloudflare = isCloudflareEnvironment()
+    console.log(`环境检测: ${isCloudflare ? 'Cloudflare' : 'Other'}, 使用模型: ${model || "openai/gpt-4-turbo"}`)
 
     // 准备发送到OpenRouter的请求
     const openRouterPayload = {
@@ -42,12 +50,6 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      // 创建一个新的 TransformStream
-      const encoder = new TextEncoder()
-      const decoder = new TextDecoder()
-      const stream = new TransformStream()
-      const writer = stream.writable.getWriter()
-
       // 发送请求到OpenRouter API
       const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -60,88 +62,153 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify(openRouterPayload),
       })
 
+      console.log(`OpenRouter响应状态: ${openRouterResponse.status}`)
+
       if (!openRouterResponse.ok) {
         const errorText = await openRouterResponse.text()
         console.error(`OpenRouter API错误: ${openRouterResponse.status}`, errorText)
-
-        writer.write(encoder.encode(`OpenRouter API错误: ${openRouterResponse.status}`))
-        writer.close()
-
-        return new Response(stream.readable, {
+        return new Response(`OpenRouter API错误: ${openRouterResponse.status} - ${errorText}`, {
+          status: openRouterResponse.status,
           headers: { "Content-Type": "text/plain; charset=utf-8" },
         })
       }
 
       if (!openRouterResponse.body) {
-        writer.write(encoder.encode("OpenRouter API没有返回数据流"))
-        writer.close()
-
-        return new Response(stream.readable, {
+        console.error("OpenRouter API没有返回数据流")
+        return new Response("OpenRouter API没有返回数据流", {
+          status: 500,
           headers: { "Content-Type": "text/plain; charset=utf-8" },
         })
       }
 
-      // 处理OpenRouter的流式响应
-      const reader = openRouterResponse.body.getReader()
-      let fullText = ""
+      console.log("开始创建流式响应")
 
-      // 开始处理流
-      const processStream = async () => {
-        try {
-          while (true) {
-            const { done, value } = await reader.read()
-
-            if (done) {
-              break
-            }
-
-            // 解码数据块
-            const chunk = decoder.decode(value, { stream: true })
-
-            // 处理SSE格式的数据
-            const lines = chunk.split("\n")
-            for (const line of lines) {
-              if (line.startsWith("data:")) {
-                const data = line.slice(5).trim()
-
-                // 检查是否是结束标记，注意可能有空格
-                if (data === "[DONE]" || data.includes("[DONE]")) {
-                  continue
-                }
-
-                try {
-                  // 只有当数据看起来像JSON时才尝试解析
-                  if (data && (data.startsWith("{") || data.startsWith("["))) {
-                    const json = JSON.parse(data)
-                    const content = json.choices?.[0]?.delta?.content || ""
-
-                    if (content) {
-                      fullText += content
-                      await writer.write(encoder.encode(content))
+      if (isCloudflare) {
+        // Cloudflare环境下使用简化的流处理
+        console.log("使用Cloudflare优化的流处理")
+        
+        return new Response(openRouterResponse.body.pipeThrough(new TransformStream({
+          transform(chunk, controller) {
+            try {
+              const decoder = new TextDecoder()
+              const encoder = new TextEncoder()
+              const text = decoder.decode(chunk)
+              
+              const lines = text.split('\n')
+              for (const line of lines) {
+                if (line.startsWith('data:')) {
+                  const data = line.slice(5).trim()
+                  if (data && data !== '[DONE]' && data.startsWith('{')) {
+                    try {
+                      const json = JSON.parse(data)
+                      const content = json.choices?.[0]?.delta?.content
+                      if (content) {
+                        controller.enqueue(encoder.encode(content))
+                      }
+                    } catch (e) {
+                      console.error('解析JSON失败:', e)
                     }
                   }
-                } catch (e) {
-                  console.error("解析SSE数据失败:", e, "原始数据:", data)
-                  // 继续处理下一行，不中断流
                 }
               }
+            } catch (error) {
+              console.error('TransformStream处理错误:', error)
             }
           }
+        })), {
+          headers: {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+          }
+        })
+      } else {
+        // 非Cloudflare环境使用完整的流处理
+        console.log("使用标准流处理")
+        
+        const encoder = new TextEncoder()
+        const decoder = new TextDecoder()
 
-          await writer.close()
-        } catch (error) {
-          console.error("处理流时出错:", error)
-          await writer.abort(error as Error)
-        }
+        const stream = new ReadableStream({
+          async start(controller) {
+            console.log("ReadableStream started")
+            
+            try {
+              const reader = openRouterResponse.body!.getReader()
+              let buffer = ""
+              let chunkCount = 0
+
+              while (true) {
+                const { done, value } = await reader.read()
+                chunkCount++
+
+                if (done) {
+                  console.log(`流结束，总共处理了 ${chunkCount} 个数据块`)
+                  break
+                }
+
+                // 解码数据块
+                buffer += decoder.decode(value, { stream: true })
+                
+                // 按行处理
+                const lines = buffer.split('\n')
+                buffer = lines.pop() || "" // 保留最后一个可能不完整的行
+
+                for (const line of lines) {
+                  if (line.startsWith("data:")) {
+                    const data = line.slice(5).trim()
+
+                    // 检查是否是结束标记
+                    if (data === "[DONE]" || data.includes("[DONE]")) {
+                      console.log("收到结束标记")
+                      continue
+                    }
+
+                    try {
+                      // 只有当数据看起来像JSON时才尝试解析
+                      if (data && (data.startsWith("{") || data.startsWith("["))) {
+                        const json = JSON.parse(data)
+                        const content = json.choices?.[0]?.delta?.content || ""
+
+                        if (content) {
+                          console.log(`发送内容块: ${content.substring(0, 50)}...`)
+                          controller.enqueue(encoder.encode(content))
+                        }
+                      }
+                    } catch (e) {
+                      console.error("解析SSE数据失败:", e, "原始数据:", data.substring(0, 100))
+                      // 继续处理下一行，不中断流
+                    }
+                  }
+                }
+              }
+
+              console.log("正常关闭流")
+              controller.close()
+            } catch (error) {
+              console.error("处理流时出错:", error)
+              // 尝试发送错误信息到客户端
+              try {
+                controller.enqueue(encoder.encode(`\n\n错误: ${error}`))
+              } catch (e) {
+                console.error("无法发送错误信息到客户端:", e)
+              }
+              controller.error(error)
+            }
+          },
+        })
+
+        console.log("返回流式响应")
+
+        // 返回流式响应
+        return new Response(stream, {
+          headers: { 
+            "Content-Type": "text/plain; charset=utf-8",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+          },
+        })
       }
-
-      // 开始处理流
-      processStream()
-
-      // 返回流式响应
-      return new Response(stream.readable, {
-        headers: { "Content-Type": "text/plain; charset=utf-8" },
-      })
     } catch (fetchError) {
       console.error("OpenRouter API请求错误:", fetchError)
       return new Response(
