@@ -12,7 +12,7 @@ datasource db {
 model Story {
   id           Int      @id @default(autoincrement())
   title        String
-  introduction String?  @db.VarChar(500)
+  introduction String?  @db.VarChar(1000)
   coverImage   String?
   userId       BigInt
   prompt       String   @db.Text
