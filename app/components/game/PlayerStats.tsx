@@ -6,9 +6,10 @@ import { PlayerStats as PlayerStatsType } from '@/app/types/game'
 
 interface PlayerStatsProps {
   stats: PlayerStatsType
+  gameData: any
 }
 
-export function PlayerStats({ stats }: PlayerStatsProps) {
+export function PlayerStats({ stats, gameData }: PlayerStatsProps) {
   const { t } = useTranslation()
 
   return (
@@ -20,38 +21,19 @@ export function PlayerStats({ stats }: PlayerStatsProps) {
         </h3>
 
         <div className="space-y-4">
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[#A0A0B5] flex items-center">
-                <Heart className="w-4 h-4 mr-2 text-[#FF5577]" />
-                {t('health')}
-              </span>
-              <span className="text-[#F0F0F5] font-medium">{stats.health}/100</span>
+          {Array.isArray(gameData?.skills) && gameData.skills.map((skill: any, index: number) => (
+            <div key={skill.id || index}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[#A0A0B5] flex items-center">
+                  <Heart className="w-4 h-4 mr-2 text-[#FF5577]" />
+                  {skill.name || t('health')}
+                </span>
+                <span className="text-[#F0F0F5] font-medium">{skill.value || 0}/100</span>
+              </div>
+              <Progress value={skill.value || 0} className="h-2" />
             </div>
-            <Progress value={stats.health} className="h-2" />
-          </div>
-
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[#A0A0B5] flex items-center">
-                <Zap className="w-4 h-4 mr-2 text-[#33D69F]" />
-                {t('energy')}
-              </span>
-              <span className="text-[#F0F0F5] font-medium">{stats.energy}/100</span>
-            </div>
-            <Progress value={stats.energy} className="h-2" />
-          </div>
-
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[#A0A0B5] flex items-center">
-                <Zap className="w-4 h-4 mr-2 text-[#00F5D4]" />
-                {t('inspirationPoints')}
-              </span>
-              <span className="text-[#00F5D4] font-bold text-lg">{stats.inspiration}</span>
-            </div>
-            <p className="text-[#A0A0B5] text-xs">{t('inspirationDescription')}</p>
-          </div>
+          ))}
+        
         </div>
       </CardContent>
     </Card>

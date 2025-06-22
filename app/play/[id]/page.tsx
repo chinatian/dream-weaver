@@ -88,7 +88,7 @@ export default function PlayPage() {
   
     const response = await sendChatStreamRequest(
       currentMessages, 
-      "" || "", 
+      "", 
       process.env.NEXT_PUBLIC_MODEL || "", 
       systemPrompt)
     console.log(response)
@@ -112,7 +112,7 @@ export default function PlayPage() {
     setMessages([...currentMessages, assistantMessage])
     console.log('gameData', _gameData)
     if (_gameData.content) {
-      genSenceImage(_gameData.content)
+      genSenceImage(_gameData.content, _gameData)
     }
   }
 
@@ -137,7 +137,7 @@ export default function PlayPage() {
     }
   }
 
-  const genSenceImage = async (content:string) => {
+  const genSenceImage = async (content:string, currentGameData?: any) => {
     if (!content) {
       console.error('Content is required for image generation')
       return
@@ -189,14 +189,19 @@ export default function PlayPage() {
 
       const data = await response.json()
       console.log('Generated image URL:', data.imageUrl)
-      setGameData({
-        ...gameData,
+      // 使用传入的currentGameData或者函数式更新
+      setGameData((prevData: any) => ({
+        ...(currentGameData || prevData),
         sceneImage: data.imageUrl
-      })
+      }))
     } catch (error) {
       console.error('Error generating image:', error)
     }
   }
+
+  useEffect(() => {
+    console.log('Current gameData:', gameData)
+  }, [gameData])
 
 
 
@@ -245,7 +250,7 @@ export default function PlayPage() {
                 </CardContent>
               </Card>
 
-              <PlayerStats stats={gameState.playerStats} />
+              <PlayerStats stats={gameState.playerStats} gameData={gameData} />
               <ProFeatures />
             </div>
           </div>
