@@ -75,15 +75,15 @@ export function ScriptGenerator({ apiKey, model, onYamlGenerated }: ScriptGenera
       return
     }
 
-    if (!apiKey) {
+    // if (!apiKey) {
      
-      toast({
-        title: t("scriptGenerator.messages.missingApiKey"),
-        description: t("scriptGenerator.messages.enterApiKey"),
-        variant: "destructive",
-      })
-      return
-    }
+    //   toast({
+    //     title: t("scriptGenerator.messages.missingApiKey"),
+    //     description: t("scriptGenerator.messages.enterApiKey"),
+    //     variant: "destructive",
+    //   })
+    //   return
+    // }
 
 
     if (!language) {
