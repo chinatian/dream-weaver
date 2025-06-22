@@ -18,7 +18,7 @@ import { sendChatStreamRequest } from "@/app/lib/chat"
 import { useLanguage } from "@/contexts/language-context"
 import { parseGameState,getJsonFromContent } from "@/lib/parser"
 import {sceneImagePrompt} from "@/lib/defaultSystemPrompt"
-import {ImageGenerationInput,ReplicateClient} from "@/lib/replicateClient"
+
 
 export default function PlayPage() {
   const params = useParams()
