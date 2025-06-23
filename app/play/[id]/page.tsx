@@ -178,7 +178,7 @@ export default function PlayPage() {
         },
         body: JSON.stringify({
           prompt: imgPrompt.imagePrompt,
-          aspect_ratio: "3:4",
+          aspect_ratio: "16:9",
           key: `scene-${params.id}-${Date.now()}.png`
         }),
       })
@@ -214,9 +214,9 @@ export default function PlayPage() {
 
       <div className="pt-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-6 gap-6">
+          <div className="grid lg:grid-cols-12 gap-6">
             {/* Story Content - Left Side */}
-            <div className="lg:col-span-4">
+            <div className="lg:col-span-9">
               <GameScene
                 storyData={storyData}
                 gameData={gameData}
@@ -229,7 +229,7 @@ export default function PlayPage() {
             </div>
 
             {/* Game Info - Right Side */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-3 space-y-6">
               {/* Scene Image */}
               <Card className="bg-[#1E1E2D] border-[#8A4FFF]/20">
                 <CardContent className="p-0">
