@@ -17,7 +17,7 @@ import { parseYamlToJson } from "@/lib/parser"
 interface ScriptGeneratorProps {
   apiKey: string
   model: string
-  onYamlGenerated: (yaml: string) => void
+  onYamlGenerated: (id: number) => void
 }
 
 export function ScriptGenerator({ apiKey, model, onYamlGenerated }: ScriptGeneratorProps) {
@@ -193,7 +193,7 @@ export function ScriptGenerator({ apiKey, model, onYamlGenerated }: ScriptGenera
           description: t("scriptGenerator.messages.storyCreated"),
         })
         
-        onYamlGenerated(generatedYaml)
+        onYamlGenerated(story.id)
       } catch (error) {
         console.error('Error creating story:', error)
         toast({

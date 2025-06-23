@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Crown, Zap } from "lucide-react"
 import Link from "next/link"
@@ -12,12 +13,11 @@ export default function CreatePage() {
   const [apiKey, setApiKey] = useState("")
   const [model, setModel] = useState(process.env.NEXT_PUBLIC_MODEL || "openai/gpt-4-turbo-preview")
   const { t } = useLanguage()
+  const router = useRouter()
 
-
-
-  const handleYamlGenerated = (yaml: string) => {
+  const handleYamlGenerated = (id: number) => {
     // Handle the generated YAML here
-    console.log("Generated YAML:", yaml)
+    router.push(`/play/${id}`)
   }
 
   return (
