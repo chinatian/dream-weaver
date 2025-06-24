@@ -20,6 +20,7 @@ import { parseGameState,getJsonFromContent } from "@/lib/parser"
 import {sceneImagePrompt} from "@/lib/defaultSystemPrompt"
 
 
+
 export default function PlayPage() {
   const params = useParams()
   const { t } = useLanguage()
@@ -27,6 +28,7 @@ export default function PlayPage() {
   const [messages, setMessages] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [gameData, setGameData] = useState<any>({} as any)
+  const [prevImgPrompt, setPrevImgPrompt] = useState<string>("")
 
 
   useEffect(() => {
@@ -144,8 +146,19 @@ export default function PlayPage() {
     }
 
     const systemPrompt = sceneImagePrompt
+    
+    const addPrevImgPrompt = prevImgPrompt ? `
+      Previous Image Prompt：
+      ${prevImgPrompt}
+    ` : ''
     const _messages = [
-      {role:'user',content:content}
+      {role:'user',content:`
+        ${addPrevImgPrompt}
+
+        Story Content:
+        ${content}
+        
+      `}
     ]
     const response = await sendChatStreamRequest(
       _messages, 
@@ -169,6 +182,13 @@ export default function PlayPage() {
     }
 
     const imgPrompt = getJsonFromContent(result)
+
+    setGameData((prevData: any) => ({
+      ...(currentGameData || prevData),
+      imgPrompt: imgPrompt.imagePrompt
+    }))
+
+    setPrevImgPrompt(imgPrompt.imagePrompt)
 
     try {
       const response = await fetch('/api/generate-image', {

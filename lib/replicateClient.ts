@@ -19,14 +19,25 @@ export class ReplicateClient {
       
     }
 
-    async generateImage(input: ImageGenerationInput, key: string): Promise<string> {
+    async generateImage(input: ImageGenerationInput, key: string, model: `${string}/${string}` | `${string}/${string}:${string}` = "google/imagen-4"): Promise<string> {
         try {
-            const output = await this.replicate.run("google/imagen-4", {
-                input: {
+            let _input = {}
+            if (model === "google/imagen-4") {
+                _input = {
                     prompt: input.prompt,
                     aspect_ratio: input.aspect_ratio || "16:9",
                     safety_filter_level: input.safety_filter_level || "block_medium_and_above"
                 }
+            }
+            if (model === "black-forest-labs/flux-1.1-pro") {
+                _input = {
+                    prompt: input.prompt,
+                    aspect_ratio: input.aspect_ratio || "16:9",
+                    output_format:'jpg'
+                }
+            }
+            const output = await this.replicate.run(model, {
+                input:_input
             });
 
             console.log("Generated image, uploading to R2...");

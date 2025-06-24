@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
           aspect_ratio,
           safety_filter_level,
         },
-        key
+        key,
+        "black-forest-labs/flux-1.1-pro"
       )
 
       return NextResponse.json({ imageUrl })
