@@ -28,8 +28,31 @@ export default function PlayPage() {
   const [messages, setMessages] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [gameData, setGameData] = useState<any>({} as any)
+  const [gameDataHistory, setGameDataHistory] = useState<any[]>([])
   const [prevImgPrompt, setPrevImgPrompt] = useState<string>("")
 
+  // 辅助函数：更新 gameData 并添加到历史记录
+  const updateGameData = (newGameData: any) => {
+    setGameData(newGameData)
+    setGameDataHistory(prev => [...prev, {
+      ...newGameData,
+      timestamp: Date.now(),
+      id: prev.length + 1
+    }])
+  }
+
+  // 辅助函数：基于之前数据更新 gameData
+  const updateGameDataFromPrevious = (updateFn: (prevData: any) => any, currentGameData?: any) => {
+    setGameData((prevData: any) => {
+      const updatedData = updateFn(currentGameData || prevData)
+      setGameDataHistory(prev => [...prev, {
+        ...updatedData,
+        timestamp: Date.now(),
+        id: prev.length + 1
+      }])
+      return updatedData
+    })
+  }
 
   useEffect(() => {
     const fetchStoryData = async () => {
@@ -109,7 +132,7 @@ export default function PlayPage() {
       // ... 处理文本
     }
     const _gameData = parseGameState(result)
-    setGameData(_gameData)
+    updateGameData(_gameData)
     const assistantMessage = { role: "assistant", content: result }
     setMessages([...currentMessages, assistantMessage])
     console.log('gameData', _gameData)
@@ -183,10 +206,10 @@ export default function PlayPage() {
 
     const imgPrompt = getJsonFromContent(result)
 
-    setGameData((prevData: any) => ({
+    updateGameDataFromPrevious((prevData: any) => ({
       ...(currentGameData || prevData),
       imgPrompt: imgPrompt.imagePrompt
-    }))
+    }), currentGameData)
 
     setPrevImgPrompt(imgPrompt.imagePrompt)
 
@@ -210,10 +233,10 @@ export default function PlayPage() {
       const data = await response.json()
       console.log('Generated image URL:', data.imageUrl)
       // 使用传入的currentGameData或者函数式更新
-      setGameData((prevData: any) => ({
+      updateGameDataFromPrevious((prevData: any) => ({
         ...(currentGameData || prevData),
         sceneImage: data.imageUrl
-      }))
+      }), currentGameData)
     } catch (error) {
       console.error('Error generating image:', error)
     }
@@ -222,6 +245,10 @@ export default function PlayPage() {
   useEffect(() => {
     console.log('Current gameData:', gameData)
   }, [gameData])
+
+  useEffect(() => {
+    console.log('GameData History:', gameDataHistory)
+  }, [gameDataHistory])
 
 
 
