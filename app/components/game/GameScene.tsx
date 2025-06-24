@@ -8,20 +8,26 @@ import { useTranslation } from '@/app/translations/game'
 interface GameSceneProps {
   storyData: StoryData
   gameData: any
+  gameDataHistory: any[]
   sceneImage: string
   task?: GameTask
   sceneDescription: SceneDescription
   onAction: (action: string, text: string) => void
+  onSelectHistoryData: (data: any) => void
   isLoading: boolean
+  isGenImgLoading: boolean
 }
 
 export function GameScene({
   storyData,
   gameData,
+  gameDataHistory,
   task,
   sceneDescription,
   onAction,
-  isLoading
+  onSelectHistoryData,
+  isLoading,
+  isGenImgLoading
 }: GameSceneProps) {
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(1)
   const [customAction, setCustomAction] = useState("")
@@ -29,6 +35,7 @@ export function GameScene({
   const [isTransitioning, setIsTransitioning] = useState(false)
   const { t } = useTranslation()
   const textContentRef = useRef<HTMLDivElement>(null)
+  const historyScrollRef = useRef<HTMLDivElement>(null)
 
   const handleCustomSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,8 +73,25 @@ export function GameScene({
     }
   }, [gameData])
 
+  // 历史图片自动滚动
+  useEffect(() => {
+    if (historyScrollRef.current && gameDataHistory && gameDataHistory.length > 0) {
+      const scrollContainer = historyScrollRef.current
+      // 滚动到最右边（最新的图片）
+      const scrollToRight = () => {
+        scrollContainer.scrollTo({
+          left: scrollContainer.scrollWidth - scrollContainer.clientWidth,
+          behavior: 'smooth'
+        })
+      }
+      
+      // 稍微延迟一下确保 DOM 更新完成
+      setTimeout(scrollToRight, 100)
+    }
+  }, [gameDataHistory])
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black flex flex-col">
       {/* 加载状态覆盖层 */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center z-50 bg-black/80 backdrop-blur-sm">
@@ -81,8 +105,8 @@ export function GameScene({
         </div>
       )}
 
-      {/* 图片区域 - 占据顶部65% */}
-      <div className="relative w-full h-[65vh] overflow-hidden">
+      {/* 图片区域 - 占据65%的可用高度 */}
+      <div className="relative w-full flex-[0_0_65%] overflow-hidden">
         <div 
           className={`absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-1000 ease-out ${
             isTransitioning ? 'scale-105 opacity-80' : 'scale-100 opacity-100'
@@ -99,25 +123,28 @@ export function GameScene({
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         
         {/* 场景标题 - 电影字幕风格 */}
-        <div className="absolute bottom-6 left-6 z-10">
-          <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
-            <h3 className="text-white/90 text-sm font-medium tracking-wide">
-              当前场景
-            </h3>
-            <h2 className="text-white text-lg font-semibold mt-1">
-              {storyData.prompt_json?.interactiveNovel?.storySettings?.title || "未知场景"}
-            </h2>
-            <div className="flex justify-end">
-            <Button
-                      onClick={() => handleActionClick('start', '')}
-                      disabled={isLoading}
-                      className="bg-[#8A4FFF] hover:bg-[#8A4FFF]/80 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#8A4FFF]/25"
-                    >
-                      {t('startGame')}
-                    </Button>
+     
+        {(!gameDataHistory || gameDataHistory.length < 1) && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+            <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
+              <h3 className="text-white/90 text-sm font-medium tracking-wide">
+                当前场景
+              </h3>
+              <h2 className="text-white text-lg font-semibold mt-1">
+                {storyData.prompt_json?.interactiveNovel?.storySettings?.title || "未知场景"}
+              </h2>
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => handleActionClick('start', '')}
+                  disabled={isLoading}
+                  className="bg-[#8A4FFF] hover:bg-[#8A4FFF]/80 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#8A4FFF]/25"
+                >
+                  {t('startGame')}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Pro功能图标 - 简约设计 */}
         <div className="absolute top-6 right-6 z-10">
@@ -125,10 +152,65 @@ export function GameScene({
             <span className="text-amber-400 text-sm">👑</span>
           </div>
         </div>
+
+        {/* 历史图片展示 - 底部滚动 */}
+        {(gameDataHistory && gameDataHistory.length > 0) || isGenImgLoading ? (
+          <div className="absolute bottom-4 left-4 right-4 z-10">
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+              <div 
+                ref={historyScrollRef}
+                className="flex space-x-3 overflow-x-auto pb-2"
+              >
+                {gameDataHistory && gameDataHistory.filter(item => item.sceneImage).map((historyData, index) => (
+                  <div
+                    key={historyData.id || index}
+                    onClick={() => onSelectHistoryData(historyData)}
+                    className="flex-shrink-0 cursor-pointer group transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="relative w-20 h-12 rounded-md overflow-hidden border-2 border-transparent group-hover:border-[#8A4FFF]/50 transition-all duration-300">
+                      <img
+                        src={historyData.sceneImage}
+                        alt={`历史场景 ${index + 1}`}
+                        className="w-full h-full object-cover group-hover:brightness-110 transition-all duration-300"
+                      />
+                      {gameData?.sceneImage === historyData.sceneImage && (
+                        <div className="absolute inset-0 border-2 border-[#8A4FFF] rounded-md bg-[#8A4FFF]/20"></div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1">
+                        <span className="text-white/80 text-xs font-medium">{index + 1}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* 图片生成中的 loading 状态 */}
+                {isGenImgLoading && (
+                  <div className="flex-shrink-0 flex items-center justify-center">
+                    <div className="relative w-20 h-12 rounded-md overflow-hidden border-2 border-[#8A4FFF]/30 bg-black/50">
+                      {/* Loading 动画 */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative">
+                          <div className="w-6 h-6 border-2 border-[#8A4FFF]/20 rounded-full"></div>
+                          <div className="absolute inset-0 w-6 h-6 border-2 border-t-[#8A4FFF] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                        </div>
+                      </div>
+                      {/* Loading 文字 */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
+                        <span className="text-white/80 text-xs font-medium">生成中</span>
+                      </div>
+                      {/* 脉冲效果 */}
+                      <div className="absolute inset-0 border-2 border-[#8A4FFF]/50 rounded-md animate-pulse"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {/* 叙事与交互区域 - 占据底部35% */}
-      <div className="relative w-full h-[35vh] bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-sm">
+      {/* 叙事与交互区域 - 占据剩余35%的可用高度 */}
+      <div className="relative w-full flex-1 bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-sm">
         <div 
           ref={textContentRef}
           className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20"
@@ -253,8 +335,8 @@ export function GameScene({
                     
                     {/* 自定义输入 */}
                     <div className="pt-4">
-                      <form onSubmit={handleCustomSubmit} className="space-y-3">
-                        <div className="relative">
+                      <form onSubmit={handleCustomSubmit} className="flex gap-3">
+                        <div className="relative flex-1">
                           <Input
                             value={customAction}
                             onChange={(e) => setCustomAction(e.target.value)}
@@ -266,7 +348,7 @@ export function GameScene({
                         <Button 
                           type="submit" 
                           disabled={isLoading || !customAction.trim()}
-                          className="bg-gradient-to-r from-[#8A4FFF] to-[#6B35CC] hover:from-[#8A4FFF]/80 hover:to-[#6B35CC]/80 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#8A4FFF]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="bg-gradient-to-r from-[#8A4FFF] to-[#6B35CC] hover:from-[#8A4FFF]/80 hover:to-[#6B35CC]/80 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#8A4FFF]/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                         >
                           {t('yourChoice')}
                         </Button>

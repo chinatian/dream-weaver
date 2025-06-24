@@ -351,3 +351,13 @@ html[lang="id"] {
   animation: loadingDots 1.4s infinite ease-in-out both;
   animation-delay: -0.96s;
 }
+
+/* 隐藏滚动条的样式 */
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

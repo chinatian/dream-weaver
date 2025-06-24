@@ -21,12 +21,14 @@ import {sceneImagePrompt} from "@/lib/defaultSystemPrompt"
 
 
 
+
 export default function PlayPage() {
   const params = useParams()
   const { t } = useLanguage()
   const [storyData, setStoryData] = useState<StoryData>({} as StoryData)
   const [messages, setMessages] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isGenImgLoading, setIsGenImgLoading] = useState(false)
   const [gameData, setGameData] = useState<any>({} as any)
   const [gameDataHistory, setGameDataHistory] = useState<any[]>([])
   const [prevImgPrompt, setPrevImgPrompt] = useState<string>("")
@@ -34,11 +36,11 @@ export default function PlayPage() {
   // 辅助函数：更新 gameData 并添加到历史记录
   const updateGameData = (newGameData: any) => {
     setGameData(newGameData)
-    setGameDataHistory(prev => [...prev, {
-      ...newGameData,
-      timestamp: Date.now(),
-      id: prev.length + 1
-    }])
+    // setGameDataHistory(prev => [...prev, {
+    //   ...newGameData,
+    //   timestamp: Date.now(),
+    //   id: prev.length + 1
+    // }])
   }
 
   // 辅助函数：基于之前数据更新 gameData
@@ -167,6 +169,7 @@ export default function PlayPage() {
       console.error('Content is required for image generation')
       return
     }
+    setIsGenImgLoading(true)
 
     const systemPrompt = sceneImagePrompt
     
@@ -205,13 +208,8 @@ export default function PlayPage() {
     }
 
     const imgPrompt = getJsonFromContent(result)
-
-    updateGameDataFromPrevious((prevData: any) => ({
-      ...(currentGameData || prevData),
-      imgPrompt: imgPrompt.imagePrompt
-    }), currentGameData)
-
     setPrevImgPrompt(imgPrompt.imagePrompt)
+   
 
     try {
       const response = await fetch('/api/generate-image', {
@@ -232,14 +230,22 @@ export default function PlayPage() {
 
       const data = await response.json()
       console.log('Generated image URL:', data.imageUrl)
-      // 使用传入的currentGameData或者函数式更新
-      updateGameDataFromPrevious((prevData: any) => ({
-        ...(currentGameData || prevData),
-        sceneImage: data.imageUrl
-      }), currentGameData)
+      currentGameData.imgPrompt = imgPrompt.imagePrompt
+      currentGameData.sceneImage = data.imageUrl
+      setGameData(currentGameData)
+      setGameDataHistory(prev => [...prev, {
+        ...currentGameData,
+        timestamp: Date.now(),
+        id: prev.length + 1
+      }])
+      
+      
     } catch (error) {
       console.error('Error generating image:', error)
+      // 即使图片生成失败，也要更新 imgPrompt
+     
     }
+    setIsGenImgLoading(false)
   }
 
   useEffect(() => {
@@ -267,11 +273,14 @@ export default function PlayPage() {
               <GameScene
                 storyData={storyData}
                 gameData={gameData}
+                gameDataHistory={gameDataHistory}
                 sceneImage={gameData?.sceneImage || gameState.sceneImage}
                 task={gameState.task}
                 sceneDescription={sceneDescription}
                 onAction={handleAction}
+                onSelectHistoryData={setGameData}
                 isLoading={isLoading}
+                isGenImgLoading={isGenImgLoading}
               />
             </div>
 
