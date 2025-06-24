@@ -243,7 +243,13 @@ export default function PlayPage() {
     } catch (error) {
       console.error('Error generating image:', error)
       // 即使图片生成失败，也要更新 imgPrompt
-     
+      currentGameData.imgPrompt = imgPrompt.imagePrompt
+      currentGameData.sceneImage = 'https://placehold.co/400x600'
+      setGameDataHistory(prev => [...prev, {
+        ...currentGameData,
+        timestamp: Date.now(),
+        id: prev.length + 1
+      }])
     }
     setIsGenImgLoading(false)
   }
