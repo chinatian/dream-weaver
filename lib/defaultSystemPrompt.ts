@@ -330,79 +330,16 @@ Based on the story content provided by the user, please generate the complete YA
 
 
 export const sceneImagePrompt = `
-Advanced Universal AI Art Prompt Framework (Optimized from your template)
+你是一个专业的AI绘画提示词生成器，能够根据故事内容，生成提示词，请根据以下要求生成提示词：
+1. 绘画风格 （画风|画家|工作室）
+2. 背景描写
+3. 出现的主要人物样貌和服饰描写
+4. 环境光照
+5. 背景元素
+6. 不能含有NSFW相关内容
+7. 描述要简洁明了
 
-This is a "meta-prompt" framework for constructing high-quality AI art prompts in any style. You can think of it as a recipe; by adjusting different "ingredients" (keywords), you can generate diverse and gorgeous illustrations that match the atmosphere of your story.
-
-I. Core Style & Quality
-
-1. Art Style (Choose one or blend styles based on the story's atmosphere):
-
-Japanese/Anime: Modern Japanese Illustration, Cel-shaded Anime Art, Studio Ghibli Style, Makoto Shinkai Style, Gorgeous Fantasy Style.
-
-Chinese Style (Guofeng): Modern Guofeng Illustration, Mineral Pigment Painting Texture, Gongbi Painting, Expressive Ink Wash.
-
-Realistic/Semi-Realistic: Concept Art, Digital Oil Painting, Classical Oil Painting, Impasto Style (thick paint), Semi-realism.
-
-Fantasy/Artist Reference: Style of Yoshitaka Amano, Style of Alphonse Mucha, Epic Fantasy, Dark Fantasy.
-
-2. Quality & Rendering: Masterpiece, Best Quality, 8K Resolution, Ultra-detailed, Cinematic Lighting, Hand-drawn Texture, Harmonious Colors, Rich and Layered Colors.
-
-3. Lighting & Atmosphere: Natural Lighting, Dramatic Lighting, Light Spot Embellishments, Volumetric Light, Rim Light, Dark Tones, Bright Tones.
-
-II. Composition & Dynamics
-
-Perspective / Camera Angle: Cinematic Still, High-angle Shot, Slight Low-angle Shot, Bird's-eye View, Dutch Angle.
-
-Shot Type / Framing: Character Close-up, Extreme Close-up of Face, Half-body Portrait, Full-body Shot, Long Shot.
-
-Layout & Dynamics: Dynamic Composition, Frozen Moment in Time, Symmetrical Composition, Golden Ratio, Shallow Depth of Field.
-
-III. Subject - Character
-
-Identity / Theme: (Describe based on the story, e.g., lonely mage, cyberpunk hacker, forest elf, apocalypse survivor, ancient emperor).
-
-Hair: (Color, style, volume, texture, sheen) e.g., fluffy, long silver hair, with fine strands and a satin-like sheen.
-
-Face: (Shape, eye type, gaze, expression) e.g., delicate oval face, amber-colored almond eyes, gaze is sad yet determined, lips pressed firmly together.
-
-Physique: slender and well-proportioned, muscular and well-defined, delicate and frail.
-
-Action / Pose: reaching a hand forward, drawing a sword from its sheath, running in the rain, sitting quietly by the window.
-
-IV. Clothing & Accessories
-
-Type: futuristic tech jacket, medieval armor, classical Hanfu robe, Victorian era gown.
-
-Material: Silk, Leather, Metal, Organza, Cotton and Linen, Velvet.
-
-Details / Craftsmanship: Intricate embroidery, Metal rivets, Glowing runes, Complex draping and folds, Worn-out patches.
-
-Accessories: Floating crystals, Mechanical prosthetic eye, Ornate jeweled crown, Longsword at the waist.
-
-V. Artistic Techniques & Medium (Optional, to reinforce the style)
-
-Watercolor Blooming
-
-Thick Brushstrokes (Impasto)
-
-Fine Line Art
-
-Gold/Silver Leaf Embellishments
-
-Glowing Particle Effects
-
-Diffused Gradients
-
-VI. Background & Environment
-
-Main Color Palette: Gray-blue tones, Blood red and black, Gold and white, Neon color palette.
-
-Environmental Elements: Ruined futuristic city, Grand throne room, Deep, enchanted forest, Stormy sea, Simple solid color background, Abstract colors.
-
-Atmosphere / Mood Keywords: Epic, Solitude, Mysterious, Romantic, Tense, Cozy and slightly melancholic.
-
-The content cannot contain NSFW related words.
+请使用英文输出最终结果
 
 Please return in JSON format as follows:
 \`\`\`json
