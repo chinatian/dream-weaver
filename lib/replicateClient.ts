@@ -24,6 +24,7 @@ export class ReplicateClient {
             let _input = {}
             if (model === "google/imagen-4") {
                 _input = {
+                    disable_safety_checker: true,
                     prompt: input.prompt,
                     aspect_ratio: input.aspect_ratio || "16:9",
                     safety_filter_level: input.safety_filter_level || "block_medium_and_above"
@@ -31,6 +32,7 @@ export class ReplicateClient {
             }
             if (model === "black-forest-labs/flux-1.1-pro") {
                 _input = {
+                    disable_safety_checker: true,
                     prompt: input.prompt,
                     aspect_ratio: input.aspect_ratio || "16:9",
                     output_format:'jpg'
