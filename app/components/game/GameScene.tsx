@@ -91,7 +91,7 @@ export function GameScene({
   }, [gameDataHistory])
 
   return (
-    <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black flex flex-col">
+    <div className="relative w-full h-[calc(100vh-6rem)] overflow-hidden bg-black flex flex-col">
       {/* 加载状态覆盖层 */}
       {false && (
         <div className="absolute inset-0 flex items-center justify-center z-50 bg-black/80 backdrop-blur-sm">
@@ -106,7 +106,7 @@ export function GameScene({
       )}
 
       {/* 图片区域 - 占据65%的可用高度 */}
-      <div className="relative w-full flex-[0_0_65%] overflow-hidden">
+      <div className="relative w-full flex-[0_0_60%] overflow-hidden">
         <div 
           className={`absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-1000 ease-out ${
             isTransitioning ? 'scale-105 opacity-80' : 'scale-100 opacity-100'
