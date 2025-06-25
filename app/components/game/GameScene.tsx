@@ -93,7 +93,7 @@ export function GameScene({
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden bg-black flex flex-col">
       {/* 加载状态覆盖层 */}
-      {isLoading && (
+      {false && (
         <div className="absolute inset-0 flex items-center justify-center z-50 bg-black/80 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center space-y-6">
             <div className="relative">
@@ -124,7 +124,7 @@ export function GameScene({
         
         {/* 场景标题 - 电影字幕风格 */}
      
-        {(!gameDataHistory || gameDataHistory.length < 1) && (
+        {(!gameDataHistory || gameDataHistory.length < 1) && !isLoading && !isGenImgLoading && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
             <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
               <h3 className="text-white/90 text-sm font-medium tracking-wide">
@@ -211,6 +211,17 @@ export function GameScene({
 
       {/* 叙事与交互区域 - 占据剩余35%的可用高度 */}
       <div className="relative w-full flex-1 bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-sm">
+        {isLoading && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-[#8A4FFF]/20 rounded-full"></div>
+                <div className="absolute inset-0 w-12 h-12 border-4 border-t-[#8A4FFF] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+              </div>
+              <div className="text-[#8A4FFF] font-medium">故事生成中...</div>
+            </div>
+          </div>
+        )}
         <div 
           ref={textContentRef}
           className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20"
