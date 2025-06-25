@@ -138,8 +138,8 @@ export default function PlayPage() {
     const assistantMessage = { role: "assistant", content: result }
     setMessages([...currentMessages, assistantMessage])
     console.log('gameData', _gameData)
-    if (_gameData.content) {
-      genSenceImage(_gameData.content, _gameData)
+    if (_gameData.mainContent) {
+      genSenceImage(_gameData.mainContent.map((msg: any) => msg.text).join('\n'), _gameData)
     }
   }
 
