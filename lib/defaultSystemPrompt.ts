@@ -330,73 +330,78 @@ Based on the story content provided by the user, please generate the complete YA
 
 
 export const sceneImagePrompt = `
-You are a professional story analysis assistant. Please analyze the following story content and provide the information below:
-1.  Image Description: Provide specific suggestions for the overall painting style of the image. You can reference the style of a particular anime artist. The image should be impactful, have a sense of narrative, and be gorgeous.
-2.  Image Description: Referencing the previous image description, try to make the descriptions coherent. Ensure that the image represents the current Story Content.
+Advanced Universal AI Art Prompt Framework (Optimized from your template)
 
-**For the image description, please refer to the following potential descriptors:**
+This is a "meta-prompt" framework for constructing high-quality AI art prompts in any style. You can think of it as a recipe; by adjusting different "ingredients" (keywords), you can generate diverse and gorgeous illustrations that match the atmosphere of your story.
 
-**I. Core Style & Quality:**
+I. Core Style & Quality
 
-*   **Base Style:** "Gorgeous ink wash figure illustration"
-*   **Brushwork & Texture:** "Ultra-fine brushstrokes", "hand-drawn texture", "fine grain texture", "hazy/dreamy feel", "Xuan paper texture", "frosted grain texture", "mineral pigment texture"
-*   **Lighting & Color:** "Natural lighting", "harmonious colors", "full and layered colors", "light spot embellishments", "dark areas"
-*   **Special Effects (Optional):** "Particles emitting light"
+1. Art Style (Choose one or blend styles based on the story's atmosphere):
 
-**II. Composition & Dynamics:**
+Japanese/Anime: Modern Japanese Illustration, Cel-shaded Anime Art, Studio Ghibli Style, Makoto Shinkai Style, Gorgeous Fantasy Style.
 
-*   **Perspective:** "High-angle composition", "high horizon line", "front view", "slight low-angle", "bird's-eye view"
-*   **Layout:** "Symmetrical composition", "blank space on left and right"
-*   **Sense of Motion:** "Dynamic composition", "frozen moment in time"
-*   **Depth of Field & Focus:** "Shallow depth of field", "character close-up", "half-body portrait", "portrait painting", "extreme close-up of face", "close-up shot"
+Chinese Style (Guofeng): Modern Guofeng Illustration, Mineral Pigment Painting Texture, Gongbi Painting, Expressive Ink Wash.
 
-**III. Subject - Character:**
+Realistic/Semi-Realistic: Concept Art, Digital Oil Painting, Classical Oil Painting, Impasto Style (thick paint), Semi-realism.
 
-*   **Identity/Theme:** (Choose or create one, e.g., "Peony Goddess", "Lotus Goddess", "Warrior", "Cat-eared Boy", "Plum Blossom Swordsman", "Bamboo Forest Hermit", etc.)
-*   **Hair:**
-    *   Color: "Black long hair", "silver short hair", (or other colors)
-    *   Style: "Half ponytail", "fluffy long hair", "flowing straight hair", "naturally curly"
-    *   Volume & State: "Thick hair", "messy", "delicate strands of hair"
-    *   Sheen: "Hair with a satin-like luster"
-*   **Face:**
-    *   Eyes: "Peach blossom eyes", "phoenix eyes", "large eyes" (or other types)
-    *   Expression: "Smiling", "pensive", "gentle", "determined"
-    *   Lighting: "Character's face is illuminated by light", "sunlight casts mottled shadows on the character's face through [objects like leaves/lotus leaves]"
-*   **Build:** "Slender and well-proportioned body", "strong and broad-shouldered", "slim"
-*   **Action (Optional):** "Reaching forward with hand"
+Fantasy/Artist Reference: Style of Yoshitaka Amano, Style of Alphonse Mucha, Epic Fantasy, Dark Fantasy.
 
-**IV. Clothing & Accessories:**
+2. Quality & Rendering: Masterpiece, Best Quality, 8K Resolution, Ultra-detailed, Cinematic Lighting, Hand-drawn Texture, Harmonious Colors, Rich and Layered Colors.
 
-*   **Basic Garments:** "White shirt", "ancient-style long robe", "Ruqun (a type of traditional Han Chinese clothing)" (or others)
-*   **Material:** "Sequin gauze", "velvet jacquard", "organza", "satin", "cotton and linen", "leather"
-*   **Details & Craftsmanship:** "Subtle patterns (damask)", "embroidery", "prints", "lace", "complex draping and folds", "traditional clothing's subtle patterns"
-*   **Accessories:** "Bracers", "jade accessories", "ancient-style accessory tassels", "ornate and rich accessories", "crown", "earrings"
-*   **Weapons (if applicable):** "Two Western weapons hanging at the waist" (or "Chinese ancient sword", "longbow", etc.), "weapon is inlaid with gems"
+3. Lighting & Atmosphere: Natural Lighting, Dramatic Lighting, Light Spot Embellishments, Volumetric Light, Rim Light, Dark Tones, Bright Tones.
 
-**V. Ink Wash Techniques:**
+II. Composition & Dynamics
 
-*   **Outlines:** "Ink wash wet brush outline", "crisp and neat folds/turns"
-*   **Coloring:** "Ink wash blooming/smudging for coloring", "layering", "diffused gradients"
-*   **Embellishments:** "Gold and silver embellishments"
-*   **Water Marks:** "Water stains/marks"
+Perspective / Camera Angle: Cinematic Still, High-angle Shot, Slight Low-angle Shot, Bird's-eye View, Dutch Angle.
 
-**VI. Background & Atmosphere:**
+Shot Type / Framing: Character Close-up, Extreme Close-up of Face, Half-body Portrait, Full-body Shot, Long Shot.
 
-*   **Main Color Palette/Theme:** "Black + bright silver", "purple + navy blue", "gray-red tone", "gray-green tone" (or custom)
-*   **Background Elements:** "Dark-toned background", "jacquard brocade drapery", "sea of flowers", "withered plants", "landscape (mountains and water)", "bamboo forest"
-*   **Specific Atmosphere:** "Withered theme", "vibrant theme", "faint light in the dark night", "warm and slightly melancholic"
+Layout & Dynamics: Dynamic Composition, Frozen Moment in Time, Symmetrical Composition, Golden Ratio, Shallow Depth of Field.
 
-**How to use this framework to generate a prompt:**
+III. Subject - Character
 
-1.  **Determine the Core Theme/Character:** For example, you want to draw a "white-haired immortal playing a flute under the moon."
-2.  **Select Base Style & Quality Elements:** In most cases, you can keep most of the elements from the first section (Core Style & Quality).
-3.  **Choose a Composition:** Is it a high angle or a front view? A close-up or a full-body shot?
-4.  **Design Character Details:** White hair, what hairstyle? Ethereal, immortal-like eyes, what expression?
-5.  **Conceive the Attire:** Flowing Taoist robes, what material? Silk? Cotton and linen? Are there subtle patterns? Are the accessories a jade hairpin or a longsword?
-6.  **Select Ink Wash Techniques:** These are usually fixed unless you want to try specific effects.
-7.  **Set the Background & Atmosphere:** A moonlit night, a deep blue background, perhaps drapery with auspicious cloud patterns. The atmosphere is cool, serene, and mysterious.
-8.  **Combine Keywords:** Connect the selected keywords with commas or plus signs. Note that the order of words can sometimes affect the result; it's generally best to place the core descriptors at the beginning.
-9.  **The content cannot contain NSFW related words.**
+Identity / Theme: (Describe based on the story, e.g., lonely mage, cyberpunk hacker, forest elf, apocalypse survivor, ancient emperor).
+
+Hair: (Color, style, volume, texture, sheen) e.g., fluffy, long silver hair, with fine strands and a satin-like sheen.
+
+Face: (Shape, eye type, gaze, expression) e.g., delicate oval face, amber-colored almond eyes, gaze is sad yet determined, lips pressed firmly together.
+
+Physique: slender and well-proportioned, muscular and well-defined, delicate and frail.
+
+Action / Pose: reaching a hand forward, drawing a sword from its sheath, running in the rain, sitting quietly by the window.
+
+IV. Clothing & Accessories
+
+Type: futuristic tech jacket, medieval armor, classical Hanfu robe, Victorian era gown.
+
+Material: Silk, Leather, Metal, Organza, Cotton and Linen, Velvet.
+
+Details / Craftsmanship: Intricate embroidery, Metal rivets, Glowing runes, Complex draping and folds, Worn-out patches.
+
+Accessories: Floating crystals, Mechanical prosthetic eye, Ornate jeweled crown, Longsword at the waist.
+
+V. Artistic Techniques & Medium (Optional, to reinforce the style)
+
+Watercolor Blooming
+
+Thick Brushstrokes (Impasto)
+
+Fine Line Art
+
+Gold/Silver Leaf Embellishments
+
+Glowing Particle Effects
+
+Diffused Gradients
+
+VI. Background & Environment
+
+Main Color Palette: Gray-blue tones, Blood red and black, Gold and white, Neon color palette.
+
+Environmental Elements: Ruined futuristic city, Grand throne room, Deep, enchanted forest, Stormy sea, Simple solid color background, Abstract colors.
+
+Atmosphere / Mood Keywords: Epic, Solitude, Mysterious, Romantic, Tense, Cozy and slightly melancholic.
+
 Please return in JSON format as follows:
 \`\`\`json
 {
