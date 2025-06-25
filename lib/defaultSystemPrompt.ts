@@ -402,6 +402,8 @@ Environmental Elements: Ruined futuristic city, Grand throne room, Deep, enchant
 
 Atmosphere / Mood Keywords: Epic, Solitude, Mysterious, Romantic, Tense, Cozy and slightly melancholic.
 
+The content cannot contain NSFW related words.
+
 Please return in JSON format as follows:
 \`\`\`json
 {
