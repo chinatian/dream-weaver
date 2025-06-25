@@ -396,7 +396,7 @@ You are a professional story analysis assistant. Please analyze the following st
 6.  **Select Ink Wash Techniques:** These are usually fixed unless you want to try specific effects.
 7.  **Set the Background & Atmosphere:** A moonlit night, a deep blue background, perhaps drapery with auspicious cloud patterns. The atmosphere is cool, serene, and mysterious.
 8.  **Combine Keywords:** Connect the selected keywords with commas or plus signs. Note that the order of words can sometimes affect the result; it's generally best to place the core descriptors at the beginning.
-
+9.  **The content cannot contain NSFW related words.**
 Please return in JSON format as follows:
 \`\`\`json
 {
