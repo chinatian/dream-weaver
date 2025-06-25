@@ -156,6 +156,17 @@ export function GameScene({
         {/* 历史图片展示 - 底部滚动 */}
         {(gameDataHistory && gameDataHistory.length > 0) || isGenImgLoading ? (
           <div className="absolute bottom-4 left-4 right-4 z-10">
+             {/* 任务提示 */}
+             {task && (
+                  <div  className="bg-[#8A4FFF]/10 border border-[#8A4FFF]/30 rounded-lg p-4 mb-4 transition-all duration-300 ease-in-out transform opacity-100 translate-y-0">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-[#8A4FFF] rounded-full mt-2 flex-shrink-0">
+                        
+                      </div>
+                      <p className="text-[#8A4FFF] font-medium transition-all duration-300">{gameData?.task?.description}</p>
+                    </div>
+                  </div>
+                )}
             <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-white/10">
               <div 
                 ref={historyScrollRef}
@@ -271,15 +282,7 @@ export function GameScene({
             ) : (
               /* 游戏进行界面 */
               <div className={`space-y-6 transition-all duration-800 ease-out ${showingText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                {/* 任务提示 */}
-                {task && (
-                  <div className="bg-[#8A4FFF]/10 border border-[#8A4FFF]/30 rounded-lg p-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-[#8A4FFF] rounded-full mt-2 flex-shrink-0"></div>
-                      <p className="text-[#8A4FFF] font-medium">{gameData?.task?.description}</p>
-                    </div>
-                  </div>
-                )}
+                
                 
                 {/* 故事内容 */}
                 <div className="space-y-4">
@@ -287,7 +290,7 @@ export function GameScene({
                     <div 
                       key={index} 
                       className={`animate-fadeIn transition-all duration-500 ${
-                        index === currentSegmentIndex - 1 ? 'animate-pulse-once' : ''
+                        index === currentSegmentIndex ? 'animate-pulse-once' : ''
                       }`}
                     >
                       {segment.type === 'character' && segment.speaker && (
@@ -308,7 +311,7 @@ export function GameScene({
                 </div>
                 
                 {/* 继续提示 */}
-                {currentSegmentIndex < gameData?.mainContent?.length && (
+                {currentSegmentIndex <= gameData?.mainContent?.length && (
                   <div 
                     onClick={() => setCurrentSegmentIndex(currentSegmentIndex + 1)}
                     className="text-center cursor-pointer group py-4"
@@ -323,7 +326,7 @@ export function GameScene({
                 )}
                 
                 {/* 选择选项 */}
-                {currentSegmentIndex >= gameData?.mainContent?.length && (
+                {currentSegmentIndex > gameData?.mainContent?.length && (
                   <div className="space-y-4 pt-4 border-t border-white/10">
                     <div className="space-y-3">
                       {gameData?.options.map((option: any, index: number) => (
