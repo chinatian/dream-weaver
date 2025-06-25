@@ -317,7 +317,7 @@ export function GameScene({
                     className="text-center cursor-pointer group py-4"
                   >
                     <div className="inline-flex items-center space-x-2 text-white/60 hover:text-white/90 transition-all duration-300">
-                      <span className="text-sm font-medium">点击继续</span>
+                      <span className="text-sm font-medium text-[#8A4FFF]">点击继续</span>
                       <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse group-hover:animate-bounce"></div>
                       <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse group-hover:animate-bounce" style={{animationDelay: '0.1s'}}></div>
                       <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse group-hover:animate-bounce" style={{animationDelay: '0.2s'}}></div>
