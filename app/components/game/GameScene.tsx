@@ -106,7 +106,7 @@ export function GameScene({
       )}
 
       {/* 图片区域 - 占据65%的可用高度 */}
-      <div className="relative w-full flex-[0_0_60%] overflow-hidden">
+      <div className="relative w-full flex-[0_0_65%] overflow-hidden">
         <div 
           className={`absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-1000 ease-out ${
             isTransitioning ? 'scale-105 opacity-80' : 'scale-100 opacity-100'
